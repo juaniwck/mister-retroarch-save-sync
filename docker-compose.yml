@@ -6,7 +6,10 @@
 # are supported — mount the whole root so the symlinks resolve in-container.
 services:
   save-sync:
-    build: .
+    # Prebuilt multi-arch image (amd64/arm64), published by CI from this repo.
+    image: ghcr.io/juaniwck/mister-retroarch-save-sync:latest
+    # ...or build from a clone of the repo instead:
+    # build: .
     container_name: mister-retroarch-save-sync
     restart: unless-stopped
     # Match the UID/GID that owns the save trees on the host.

@@ -15,8 +15,14 @@ RUN apt-get update \
     && apt-get install -y --no-install-recommends inotify-tools \
     && rm -rf /var/lib/apt/lists/*
 
+# The runtime needs no node_modules: the daemon uses only Node built-ins plus
+# dist/converter.cjs, which esbuild bundles with all its dependencies baked in.
+
+LABEL org.opencontainers.image.source="https://github.com/juaniwck/mister-retroarch-save-sync" \
+      org.opencontainers.image.description="Keeps game saves converted between a MiSTer saves tree and a RetroArch saves tree" \
+      org.opencontainers.image.licenses="GPL-3.0-or-later"
+
 WORKDIR /app
-COPY --from=build /app/node_modules ./node_modules
 COPY --from=build /app/dist ./dist
 COPY src ./src
 COPY LICENSE ./LICENSE

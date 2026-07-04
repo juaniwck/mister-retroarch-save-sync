@@ -197,11 +197,14 @@ Things to know:
 
 ## Quick start
 
+No clone needed — a prebuilt multi-arch image (amd64/arm64) is published to
+GitHub Container Registry by CI on every push:
+
 ```yaml
 # docker-compose.yml
 services:
   save-sync:
-    build: .
+    image: ghcr.io/juaniwck/mister-retroarch-save-sync:latest
     restart: unless-stopped
     volumes:
       - /path/containing/saves-and-manifest:/retroarch   # holds saves/ + manifest.server
@@ -211,9 +214,13 @@ services:
 ```
 
 ```bash
-docker compose up -d --build
+docker compose up -d
 docker compose logs -f
 ```
+
+Pin a version tag (`:v1.0.0`) instead of `:latest` if you prefer immutable
+deploys. To build from source instead, clone the repo and replace the
+`image:` line with `build: .`, then `docker compose up -d --build`.
 
 Set `DRY_RUN=true` for a first run to see what would be written without
 touching anything.
