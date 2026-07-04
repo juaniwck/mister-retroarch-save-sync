@@ -1,0 +1,6 @@
+node_modules/
+dist/
+*.savesync.tmp
+# session/working docs, not part of the published project
+HANDOFF.md
+CLAUDE.md

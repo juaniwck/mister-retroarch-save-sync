@@ -1,0 +1,50 @@
+# mister-retroarch-save-sync — GPL-3.0-or-later
+#
+# Example compose. Adjust the volume mounts to wherever your two save trees
+# live. Layouts where MiSTer per-core folders are symlinks into a unified
+# tree (e.g. RetroNAS: /mister/saves/SNES -> ../../saves/nintendo/superfamicom)
+# are supported — mount the whole root so the symlinks resolve in-container.
+services:
+  save-sync:
+    build: .
+    container_name: mister-retroarch-save-sync
+    restart: unless-stopped
+    # Match the UID/GID that owns the save trees on the host.
+    # user: "1000:1000"
+    environment:
+      # ─── Paths ──────────────────────────────────────────────────────────
+      # Directory that CONTAINS a "saves/" subdirectory; manifest.server is
+      # written next to that saves/.
+      RETROARCH_ROOT: /retronas/retroarch/saves
+      # MiSTer saves root (the folder holding NES/, SNES/, GBA/, PSX/, ...)
+      MISTER_SAVES: /retronas/mister/saves
+
+      # ─── Reconciliation ─────────────────────────────────────────────────
+      # SYNC_ON_START: run a full reconcile once at container start.
+      #   true (default) — recommended. On boot every game is checked and any
+      #   out-of-sync saves are converted and fanned out immediately.
+      #   false — skip the initial pass; new writes are still watched live.
+      SYNC_ON_START: "true"
+
+      # RECONCILE_INTERVAL_MIN: periodic full scan interval in minutes.
+      #   0                       — inotify only, no periodic scan.
+      #   1 (default, recommended)— scan every minute as a safety net for
+      #                              writes that inotify might miss (e.g. SMB
+      #                              from another host, network mounts). The
+      #                              scan is mtime-cached, so unchanged files
+      #                              are skipped and the pass is nearly free.
+      #   Any positive integer.
+      RECONCILE_INTERVAL_MIN: "1"
+
+      # ─── Everything else ────────────────────────────────────────────────
+      WRITE_MANIFEST: "true"
+      CREATE_MISSING_DIRS: "true"
+      SETTLE_MS: "1500"             # quiet time before syncing a changing file
+      MANIFEST_DEBOUNCE_MS: "3000"  # debounce for manifest.server rewrites
+      # DRY_RUN: "true"             # log what would happen without writing
+    volumes:
+      # If your layout uses symlinked core folders, mount the whole root so
+      # the symlinks resolve inside the container.
+      - /path/to/your/shared/tree:/retronas
+      # Optional: custom core mapping
+      # - ./config:/config:ro
