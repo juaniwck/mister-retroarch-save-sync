@@ -16,7 +16,7 @@
 const fs = require('fs');
 const path = require('path');
 
-const { loadMapping, buildDirIndex, defaultPath } = require('./mapping');
+const { loadMapping, applyEnvFilters, buildDirIndex, defaultPath } = require('./mapping');
 const { SyncEngine } = require('./sync');
 const { writeManifest, countMissingManifestEntries } = require('./manifest');
 const { watch } = require('./watcher');
@@ -37,7 +37,7 @@ const RECONCILE_INTERVAL_MIN = parseInt(process.env.RECONCILE_INTERVAL_MIN || '0
 
 // Distinctive banner so it's obvious from the container logs whether this
 // build is running. Bump when writeFile / mount behavior changes.
-const BUILD_TAG = 'watchers v4 (delete events) + discriminators v2 + saturn-segacd-cpk v2 + manifest-prune';
+const BUILD_TAG = 'watchers v4 + discriminators v2 + saturn-segacd-cpk v2 + manifest-prune + env-cores v1';
 
 const log = {
   info: (...a) => console.log(new Date().toISOString(), ...a),
@@ -165,7 +165,14 @@ function main() {
     }
   }
 
-  const mapping = loadMapping(CONFIG_PATH);
+  // A mounted /config/mapping.json (if any) is loaded first; the SYSTEMS and
+  // RETROARCH_CORES environment variables then filter it down — the easy way
+  // to say "I only use these cores" without writing JSON.
+  const mapping = applyEnvFilters(loadMapping(CONFIG_PATH), process.env, log);
+  if (Object.keys(mapping.systems).length === 0) {
+    log.error('Mapping has no systems left after SYSTEMS/RETROARCH_CORES filtering. Check the values.');
+    process.exit(1);
+  }
   const dirIndex = buildDirIndex(mapping);
 
   let manifestTimer = null;

@@ -143,10 +143,33 @@ mode writes shared `scd_U/E/J.brm` files, which are ignored). The RAM cart
 synced; a cart section found in a MiSTer save is preserved on every write,
 never dropped. PicoDrive's combined `.csm` format is not supported.
 
-## Customizing the mapping (`mapping.json`)
+## Choosing your cores (recommended first step)
 
-The core/folder mapping is data, not code. Mount a JSON file at
-`/config/mapping.json` to override it:
+The default mapping knows about *every* common libretro core, so out of the
+box a synced save is copied into a lot of folders. The easy fix is two
+environment variables that filter the built-in mapping down to what you
+actually use — no JSON required:
+
+```yaml
+environment:
+  # Keep only these RetroArch core folders (comma-separated, names as they
+  # appear under saves/, case-insensitive):
+  RETROARCH_CORES: "FCEUmm, Snes9x, Gambatte, mGBA, Genesis Plus GX, Beetle PCE, Beetle PSX HW, Beetle Saturn, Mupen64Plus-Next"
+  # Optionally also limit which systems sync at all:
+  # SYSTEMS: "nes, snes, gb, gba, genesis"
+```
+
+Everything else — extensions, MiSTer folders, format conversion, content
+discrimination — is inherited from the built-in mapping for the cores you
+keep. A system whose core list ends up empty is dropped. Typos don't fail
+silently: unknown names are reported in the log, and the startup `Systems:`
+line shows exactly what's active.
+
+## Customizing the mapping (`mapping.json`, advanced)
+
+For anything the filters can't express — renamed MiSTer folders, extra core
+directories, different extensions — mount a JSON file at
+`/config/mapping.json`:
 
 ```yaml
 volumes:
@@ -206,6 +229,9 @@ services:
   save-sync:
     image: ghcr.io/juaniwck/mister-retroarch-save-sync:latest
     restart: unless-stopped
+    environment:
+      # strongly recommended: list the cores you actually use (see below)
+      RETROARCH_CORES: "FCEUmm, Snes9x, Gambatte, mGBA, Genesis Plus GX, Beetle PSX HW, Mupen64Plus-Next"
     volumes:
       - /path/containing/saves-and-manifest:/retroarch   # holds saves/ + manifest.server
       - /path/to/mister/saves:/mister/saves              # MiSTer saves root (NES/, SNES/, ...)
@@ -237,7 +263,9 @@ touching anything.
 | `SETTLE_MS` | `1500` | Quiet time after the last inotify event before syncing a file |
 | `MANIFEST_DEBOUNCE_MS` | `3000` | Debounce for manifest regeneration |
 | `RECONCILE_INTERVAL_MIN` | `0` | Periodic full reconcile (minutes); see network mounts below |
-| `MAPPING_FILE` | `/config/mapping.json` | Custom mapping override |
+| `RETROARCH_CORES` | *(unset)* | Comma-separated core folders to keep; everything else is filtered out |
+| `SYSTEMS` | *(unset)* | Comma-separated systems to keep (nes, snes, gb, gba, genesis, sms, gg, pce, psx, saturn, segacd, n64) |
+| `MAPPING_FILE` | `/config/mapping.json` | Custom mapping override (filters above apply on top of it) |
 | `DRY_RUN` | `false` | Log intended writes without writing |
 
 ## The manifest

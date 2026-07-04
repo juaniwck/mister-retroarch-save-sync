@@ -44,6 +44,7 @@ jobs:
           node test/odd-length-save.test.js
           node test/newsystems.test.js
           node test/manifest-prune.test.js
+          node test/env-filter.test.js
 
       - uses: docker/setup-qemu-action@v3
       - uses: docker/setup-buildx-action@v3

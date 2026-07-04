@@ -205,6 +205,72 @@ function loadMapping(configPath) {
   return DEFAULT_MAPPING;
 }
 
+// ---------------------------------------------------------------------------
+// Environment-variable filtering — the human-friendly alternative to writing
+// a full mapping.json. The built-in mapping already knows every core's
+// system, extensions, MiSTer folders, and content discriminators, so all a
+// person needs to say is which cores (and optionally which systems) they
+// actually use:
+//
+//   RETROARCH_CORES="FCEUmm, Snes9x, Gambatte, mGBA, Genesis Plus GX"
+//   SYSTEMS="nes, snes, gb, gba, genesis"
+//
+// Both are comma-separated, case-insensitive, whitespace-tolerant, and
+// optional. They filter whatever mapping was loaded (built-in default or a
+// mounted mapping.json). A system whose RetroArch core list ends up empty is
+// dropped entirely. Unknown names are reported so typos don't fail silently.
+// ---------------------------------------------------------------------------
+function parseListEnv(value) {
+  if (!value || !value.trim()) return null;
+  return value.split(',').map((s) => s.trim()).filter(Boolean);
+}
+
+function applyEnvFilters(mapping, env, log = console) {
+  const systemsWanted = parseListEnv(env.SYSTEMS);
+  const coresWanted = parseListEnv(env.RETROARCH_CORES);
+  if (!systemsWanted && !coresWanted) return mapping;
+
+  const out = JSON.parse(JSON.stringify(mapping));
+
+  if (systemsWanted) {
+    const known = new Set(Object.keys(out.systems).map((s) => s.toLowerCase()));
+    const wanted = new Set(systemsWanted.map((s) => s.toLowerCase()));
+    for (const name of wanted) {
+      if (!known.has(name)) {
+        log.error(`[mapping] SYSTEMS names unknown system '${name}'. Known: ${[...known].join(', ')}`);
+      }
+    }
+    for (const sys of Object.keys(out.systems)) {
+      if (!wanted.has(sys.toLowerCase())) delete out.systems[sys];
+    }
+  }
+
+  if (coresWanted) {
+    const wanted = new Set(coresWanted.map((c) => c.toLowerCase()));
+    const knownCores = new Set();
+    for (const def of Object.values(out.systems)) {
+      for (const d of def.retroarch) knownCores.add(d.toLowerCase());
+    }
+    for (const name of wanted) {
+      if (!knownCores.has(name)) {
+        log.error(
+          `[mapping] RETROARCH_CORES names unknown core folder '${name}' — check the exact `
+          + 'folder name under saves/ (see the supported-cores table in the README).',
+        );
+      }
+    }
+    for (const [sys, def] of Object.entries(out.systems)) {
+      def.retroarch = def.retroarch.filter((d) => wanted.has(d.toLowerCase()));
+      if (def.retroarch.length === 0) {
+        log.info(`[mapping] system '${sys}' has no remaining RetroArch cores; dropped`);
+        delete out.systems[sys];
+      }
+    }
+  }
+
+  return out;
+}
+
 // Build fast lookup: directory name (lowercased) -> [{system, side}]
 // A directory can belong to more than one group (mGBA belongs to gb and gba).
 function buildDirIndex(mapping) {
@@ -221,4 +287,4 @@ function buildDirIndex(mapping) {
   return index;
 }
 
-module.exports = { DEFAULT_MAPPING, loadMapping, buildDirIndex, defaultPath: path.join('/config', 'mapping.json') };
+module.exports = { DEFAULT_MAPPING, loadMapping, applyEnvFilters, buildDirIndex, defaultPath: path.join('/config', 'mapping.json') };

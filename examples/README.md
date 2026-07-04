@@ -1,5 +1,11 @@
 # Example mappings
 
+**Check the env vars first:** for the common case — "only sync the cores I
+use" — you don't need a JSON file at all. Set `RETROARCH_CORES` (and
+optionally `SYSTEMS`) in your compose environment and the built-in mapping
+is filtered for you. The files below are for setups the filters can't
+express, or as references for writing a full custom mapping.
+
 The default mapping syncs to every core folder it knows about, which is
 thorough but creates a lot of duplicate saves. These examples are minimal
 starting points — mount one at `/config/mapping.json` and edit the core

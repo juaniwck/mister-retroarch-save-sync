@@ -27,6 +27,13 @@ services:
       #   true (default) — recommended. On boot every game is checked and any
       #   out-of-sync saves are converted and fanned out immediately.
       #   false — skip the initial pass; new writes are still watched live.
+      # RETROARCH_CORES: keep only these RetroArch core folders (comma-
+      #   separated, case-insensitive). Strongly recommended — without it,
+      #   saves fan out to every core folder the default mapping knows.
+      # RETROARCH_CORES: "FCEUmm, Snes9x, Gambatte, mGBA, Genesis Plus GX"
+      # SYSTEMS: optionally limit which systems sync at all.
+      # SYSTEMS: "nes, snes, gb, gba, genesis"
+
       SYNC_ON_START: "true"
 
       # RECONCILE_INTERVAL_MIN: periodic full scan interval in minutes.
