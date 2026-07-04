@@ -1,0 +1,50 @@
+{
+  "_comment": "8/16-bit cartridge systems only: NES, SNES, Game Boy (Color), GBA, and the Sega line through one Genesis Plus GX core. No disc systems, no N64.",
+  "systems": {
+    "nes": {
+      "retroarch": ["FCEUmm"],
+      "retroarchExts": ["srm"],
+      "mister": ["NES"],
+      "misterExts": ["sav"]
+    },
+    "snes": {
+      "retroarch": ["Snes9x"],
+      "retroarchExts": ["srm"],
+      "mister": ["SNES"],
+      "misterExts": ["sav"]
+    },
+    "gb": {
+      "retroarch": ["Gambatte"],
+      "retroarchExts": ["srm"],
+      "mister": ["GAMEBOY", "GBC", "SGB"],
+      "misterExts": ["sav"]
+    },
+    "gba": {
+      "retroarch": ["mGBA"],
+      "retroarchExts": ["srm"],
+      "mister": ["GBA"],
+      "misterExts": ["sav"]
+    },
+    "genesis": {
+      "retroarch": ["Genesis Plus GX"],
+      "retroarchExts": ["srm"],
+      "mister": ["Genesis", "MegaDrive"],
+      "misterExts": ["sav"],
+      "discriminate": "genesisLike"
+    },
+    "sms": {
+      "retroarch": ["Genesis Plus GX"],
+      "retroarchExts": ["srm", "sav"],
+      "mister": ["SMS"],
+      "misterExts": ["sav"],
+      "discriminate": "smsGgLike"
+    },
+    "gg": {
+      "retroarch": ["Genesis Plus GX"],
+      "retroarchExts": ["srm", "sav"],
+      "mister": ["GameGear"],
+      "misterExts": ["sav"],
+      "discriminate": "smsGgLike"
+    }
+  }
+}

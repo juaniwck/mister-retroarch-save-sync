@@ -1,0 +1,35 @@
+{
+  "_comment": "Disc systems + N64 only: PC Engine (incl. TurboGrafx-CD), PS1, Saturn, Sega CD, N64. For Sega CD, set the Genesis Plus GX core option 'CD System BRAM' to per-game.",
+  "systems": {
+    "pce": {
+      "retroarch": ["Beetle PCE"],
+      "retroarchExts": ["srm", "sav"],
+      "mister": ["TGFX16"],
+      "misterExts": ["sav"]
+    },
+    "psx": {
+      "retroarch": ["Beetle PSX HW"],
+      "retroarchExts": ["srm", "mcr"],
+      "mister": ["PSX"],
+      "misterExts": ["sav"]
+    },
+    "saturn": {
+      "retroarch": ["Beetle Saturn"],
+      "retroarchExts": ["bkr", "bcr"],
+      "mister": ["Saturn"],
+      "misterExts": ["sav"]
+    },
+    "segacd": {
+      "retroarch": ["Genesis Plus GX"],
+      "retroarchExts": ["brm"],
+      "mister": ["MegaCD"],
+      "misterExts": ["sav"]
+    },
+    "n64": {
+      "retroarch": ["Mupen64Plus-Next"],
+      "retroarchExts": ["srm", "eep", "sra", "fla"],
+      "mister": ["N64"],
+      "misterExts": ["*"]
+    }
+  }
+}

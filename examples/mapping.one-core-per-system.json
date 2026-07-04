@@ -1,0 +1,80 @@
+{
+  "_comment": "Recommended starting point: full system coverage with ONE RetroArch core per system, so saves don't fan out into folders you never use. Swap core folder names for the ones you actually run (names must match your saves/ subfolders exactly). Top-level ignore rules are inherited from the defaults when omitted.",
+  "systems": {
+    "nes": {
+      "retroarch": ["FCEUmm"],
+      "retroarchExts": ["srm"],
+      "mister": ["NES"],
+      "misterExts": ["sav"]
+    },
+    "snes": {
+      "retroarch": ["Snes9x"],
+      "retroarchExts": ["srm"],
+      "mister": ["SNES"],
+      "misterExts": ["sav"]
+    },
+    "gb": {
+      "retroarch": ["Gambatte"],
+      "retroarchExts": ["srm"],
+      "mister": ["GAMEBOY", "GBC", "SGB"],
+      "misterExts": ["sav"]
+    },
+    "gba": {
+      "retroarch": ["mGBA"],
+      "retroarchExts": ["srm"],
+      "mister": ["GBA"],
+      "misterExts": ["sav"]
+    },
+    "genesis": {
+      "retroarch": ["Genesis Plus GX"],
+      "retroarchExts": ["srm"],
+      "mister": ["Genesis", "MegaDrive"],
+      "misterExts": ["sav"],
+      "discriminate": "genesisLike"
+    },
+    "sms": {
+      "retroarch": ["Genesis Plus GX"],
+      "retroarchExts": ["srm", "sav"],
+      "mister": ["SMS"],
+      "misterExts": ["sav"],
+      "discriminate": "smsGgLike"
+    },
+    "gg": {
+      "retroarch": ["Genesis Plus GX"],
+      "retroarchExts": ["srm", "sav"],
+      "mister": ["GameGear"],
+      "misterExts": ["sav"],
+      "discriminate": "smsGgLike"
+    },
+    "segacd": {
+      "retroarch": ["Genesis Plus GX"],
+      "retroarchExts": ["brm"],
+      "mister": ["MegaCD"],
+      "misterExts": ["sav"]
+    },
+    "pce": {
+      "retroarch": ["Beetle PCE"],
+      "retroarchExts": ["srm", "sav"],
+      "mister": ["TGFX16"],
+      "misterExts": ["sav"]
+    },
+    "psx": {
+      "retroarch": ["Beetle PSX HW"],
+      "retroarchExts": ["srm", "mcr"],
+      "mister": ["PSX"],
+      "misterExts": ["sav"]
+    },
+    "saturn": {
+      "retroarch": ["Beetle Saturn"],
+      "retroarchExts": ["bkr", "bcr"],
+      "mister": ["Saturn"],
+      "misterExts": ["sav"]
+    },
+    "n64": {
+      "retroarch": ["Mupen64Plus-Next"],
+      "retroarchExts": ["srm", "eep", "sra", "fla"],
+      "mister": ["N64"],
+      "misterExts": ["*"]
+    }
+  }
+}
