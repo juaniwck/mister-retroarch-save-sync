@@ -39,9 +39,27 @@ const RECONCILE_INTERVAL_MIN = parseInt(process.env.RECONCILE_INTERVAL_MIN || '0
 // build is running. Bump when writeFile / mount behavior changes.
 const BUILD_TAG = 'watchers v4 + discriminators v2 + saturn-segacd-cpk v2 + manifest-prune + env-cores v1';
 
+// ISO-8601 timestamp for log lines, in the timezone selected by the TZ
+// environment variable (e.g. TZ=America/New_York). Node resolves TZ via its
+// bundled tz data, so getFullYear()/getHours()/getTimezoneOffset() already
+// reflect the chosen zone. toISOString() cannot be used here because it is
+// always UTC and would ignore TZ. With TZ unset (or UTC) the offset is 0 and
+// the output ends in "Z", identical to the previous UTC-only format.
+function logTimestamp(d = new Date()) {
+  const p = (n, w = 2) => String(n).padStart(w, '0');
+  const offMin = -d.getTimezoneOffset(); // minutes east of UTC
+  const abs = Math.abs(offMin);
+  const offset = offMin === 0
+    ? 'Z'
+    : `${offMin > 0 ? '+' : '-'}${p(Math.floor(abs / 60))}:${p(abs % 60)}`;
+  return `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`
+    + `T${p(d.getHours())}:${p(d.getMinutes())}:${p(d.getSeconds())}`
+    + `.${p(d.getMilliseconds(), 3)}${offset}`;
+}
+
 const log = {
-  info: (...a) => console.log(new Date().toISOString(), ...a),
-  error: (...a) => console.error(new Date().toISOString(), ...a),
+  info: (...a) => console.log(logTimestamp(), ...a),
+  error: (...a) => console.error(logTimestamp(), ...a),
 };
 
 // Probe every target directory the mapping references. For each, run the

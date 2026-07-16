@@ -12,7 +12,7 @@ RUN npm run build
 
 FROM node:20-bookworm-slim
 RUN apt-get update \
-    && apt-get install -y --no-install-recommends inotify-tools \
+    && apt-get install -y --no-install-recommends inotify-tools tzdata \
     && rm -rf /var/lib/apt/lists/*
 
 # The runtime needs no node_modules: the daemon uses only Node built-ins plus
@@ -28,7 +28,10 @@ COPY src ./src
 COPY LICENSE ./LICENSE
 COPY vendor/save-file-converter/LICENSE ./LICENSE.save-file-converter
 
-ENV RETROARCH_ROOT=/retroarch \
+# TZ selects the timezone used for log timestamps (tzdata is installed above).
+# Override with any TZ database name, e.g. TZ=America/New_York or Europe/London.
+ENV TZ=UTC \
+    RETROARCH_ROOT=/retroarch \
     MISTER_SAVES=/mister/saves \
     SYNC_ON_START=true \
     WRITE_MANIFEST=true \

@@ -255,6 +255,7 @@ touching anything.
 
 | Variable | Default | Meaning |
 |---|---|---|
+| `TZ` | `UTC` | Timezone for log timestamps; any [TZ database name](https://en.wikipedia.org/wiki/List_of_tz_database_time_zones), e.g. `America/New_York` or `Europe/London` |
 | `RETROARCH_ROOT` | `/retroarch` | Directory containing `saves/`; `manifest.server` is written here |
 | `MISTER_SAVES` | `/mister/saves` | MiSTer saves root (contains NES/, SNES/, PSX/, ...) |
 | `SYNC_ON_START` | `true` | Full reconcile at startup |

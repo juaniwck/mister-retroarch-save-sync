@@ -15,6 +15,11 @@ services:
     # Match the UID/GID that owns the save trees on the host.
     # user: "1000:1000"
     environment:
+      # ─── Timezone ───────────────────────────────────────────────────────
+      # TZ: timezone for log timestamps. Any TZ database name works, e.g.
+      #   America/New_York or Europe/London. Defaults to UTC.
+      TZ: "America/New_York"
+
       # ─── Paths ──────────────────────────────────────────────────────────
       # Directory that CONTAINS a "saves/" subdirectory; manifest.server is
       # written next to that saves/.
